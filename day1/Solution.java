@@ -18,7 +18,7 @@ public class Solution {
 
 			int currentSum = 0;
 			while (line != null) {
-				if (line.isEmpty() || line == null) {
+				if (line.isEmpty()) {
 					if (currentSum >= firstPlace) {
 						long holder = firstPlace;
 						long holder2 = secondPlace;
@@ -54,5 +54,6 @@ public class Solution {
 				+ " third place:" + solving.thirdPlace);
 
 		System.out.println("total " + (solving.firstPlace + solving.secondPlace + solving.thirdPlace));
+		System.out.println(System.getProperty("user.dir"));
 	}
 }

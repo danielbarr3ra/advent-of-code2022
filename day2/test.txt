@@ -1,0 +1,6 @@
+A X rock rock
+B Y papper papper
+B Y papper papper
+C X sciss rock
+B X papper rock
+C Z sciss sciss
