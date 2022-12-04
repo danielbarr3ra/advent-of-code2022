@@ -8,23 +8,25 @@ class Solution {
 		this.path = path;
 	}
 
-	public char getDuplicateChar(String line) {
-		int stockLen = line.length() / 2;
-		int[] map1 = new int[127];
-		int[] map2 = new int[127];
-		for (int start = 0; start < stockLen; start++) {
-			char stock1 = line.charAt(start);
-			char stock2 = line.charAt(start + stockLen);
-
-			map1[stock1]++;
-			map2[stock2]++;
-
-			if (map1[stock2] > 0)
-				return stock2;
-			if (map2[stock1] > 0)
-				return stock1;
+	public char getBadge(String line1, String line2, String line3) {
+		int[] map = new int[127];
+		for (int i = 0; i < line1.length(); i++) {
+			if (map[line1.charAt(i)] == 0) {
+				map[line1.charAt(i)] = 1;
+			}
 		}
 
+		for (int i = 0; i < line2.length(); i++) {
+			if (map[line2.charAt(i)] == 1) {
+				map[line2.charAt(i)] = 2;
+			}
+		}
+
+		for (int i = 0; i < line3.length(); i++) {
+			if (map[line3.charAt(i)] == 2) {
+				return line3.charAt(i);
+			}
+		}
 		return '.';
 	}
 
@@ -41,13 +43,17 @@ class Solution {
 		int total = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(this.path))) {
 			String line = br.readLine();
+			String line2 = br.readLine();
+			String line3 = br.readLine();
 			while (line != null) {
-				char duplicate = getDuplicateChar(line);
+				char duplicate = getBadge(line, line2, line3);
 				total += getPriority(duplicate);
 				System.out.println(line);
 				System.out.println(duplicate);
 				System.out.println(total);
 				line = br.readLine();
+				line2 = br.readLine();
+				line3 = br.readLine();
 			}
 			System.out.println("total is : " + total);
 		} catch (Exception e) {
@@ -56,20 +62,19 @@ class Solution {
 	}
 
 	public void testDuplicateMethod() {
-		String line = "ttgJtRGJQctTZtZT";
-		String line2 = "aa";
-		char answer = getDuplicateChar(line);
-		char answer2 = getDuplicateChar(line2);
+		String line1 = "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn";
+		String line2 = "ttgJtRGJQctTZtZT";
+		String line3 = "CrZsJsPPZsGzwwsLwLmpwMDw";
+
+		char answer = getBadge(line1, line2, line3);
+
 		System.out.println(answer);
-		System.out.println(getPriority(answer));
-		System.out.println(answer2);
-		System.out.println(getPriority(answer2));
 	}
 
 	public static void main(String[] args) {
 		Solution solving = new Solution("input.txt");
 
-		solving.testDuplicateMethod();
 		solving.readFile();
+		// solving.readFile();
 	}
 }
