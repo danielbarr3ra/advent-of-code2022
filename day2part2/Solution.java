@@ -44,9 +44,9 @@ enum Outcome {
         if (this == DRAW)
             return opponentShape;
         else if (this == WIN) {
-            return Shape.values()[(opponentShape.ordinal() + 1) % 3];
+            return Shape.values()[(opponentShape.ordinal() + 2) % 3];
         } else {
-            return Shape.values()[(opponentShape.ordinal() - 1) % 3];
+            return Shape.values()[(opponentShape.ordinal() + 4) % 3];
         }
     }
 }
@@ -67,16 +67,25 @@ class Solution {
             return Shape.SCISSOR;
     }
 
+    public Outcome decodeOutcome(String code) {
+        if (code.equals("X")) {
+            return Outcome.LOSS;
+        } else if (code.equals("Y"))
+            return Outcome.DRAW;
+        else
+            return Outcome.WIN;
+    }
+
     public void readFile() {
         int total = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(this.path))) {
             String line = br.readLine();
             while (line != null) {
-                String[] moves = line.split(" ");
-                Shape theirMove = getMove(moves[0]);
-                Shape yourMove = getMove(moves[1]);
-                Outcome outcome = yourMove.canBeat(theirMove);
-                total += yourMove.getScore() + outcome.getScore();
+                String[] codes = line.split(" ");
+                Shape theirMove = getMove(codes[0]);
+                Outcome outcome = decodeOutcome(codes[1]);
+                Shape neededMove = outcome.complement(theirMove);
+                total += neededMove.getScore() + outcome.getScore();
                 line = br.readLine();
             }
             System.out.println("total is : " + total);
@@ -98,7 +107,7 @@ class Solution {
 
         Outcome t2 = Outcome.DRAW;
         Shape m2 = t2.complement(paper);
-        System.out.println(t1 + "and opponent uses" + paper + "I should use " + m2);
+        System.out.println(t2 + "and opponent uses" + paper + "I should use " + m2);
 
         Outcome t3 = Outcome.LOSS;
         Shape m3 = t3.complement(scissor);
@@ -109,6 +118,6 @@ class Solution {
     public static void main(String[] args) {
         System.out.println("Day 2");
         Solution test = new Solution("input.txt");
-        test.enumTest();
+        test.readFile();
     }
 }
