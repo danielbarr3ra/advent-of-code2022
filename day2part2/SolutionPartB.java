@@ -39,12 +39,22 @@ enum Outcome {
     public int getScore() {
         return score;
     }
+
+    public Shape complement(Shape opponentShape) {
+        if (this == DRAW)
+            return opponentShape;
+        else if (this == WIN) {
+            return Shape.values()[(opponentShape.ordinal() + 1) % 3];
+        } else {
+            return Shape.values()[(opponentShape.ordinal() - 1) % 3];
+        }
+    }
 }
 
-class Solution {
+class SolutionPartB {
     String path;
 
-    public Solution(String input) {
+    public SolutionPartB(String input) {
         this.path = input;
     }
 
@@ -76,23 +86,29 @@ class Solution {
     }
 
     public void enumTest() {
+        // opponents move
         Shape rock = Shape.ROCK;
         Shape paper = Shape.PAPER;
         Shape scissor = Shape.SCISSOR;
 
-        Outcome t1 = rock.canBeat(paper);
-        System.out.println("can rock beat papper: " + t1);
+        // for winning
+        Outcome t1 = Outcome.WIN;
+        Shape m1 = t1.complement(rock);
+        System.out.println(t1 + "and opponent uses" + rock + "I should use " + m1);
 
-        Outcome t4 = paper.canBeat(paper);
-        System.out.println("can paper beat papper: " + t4);
+        Outcome t2 = Outcome.DRAW;
+        Shape m2 = t2.complement(paper);
+        System.out.println(t1 + "and opponent uses" + paper + "I should use " + m2);
 
-        Outcome t7 = scissor.canBeat(paper);
-        System.out.println("can scissor beat papper: " + t7);
+        Outcome t3 = Outcome.LOSS;
+        Shape m3 = t3.complement(scissor);
+        System.out.println(t3 + "and opponent uses" + scissor + "I should use " + m3);
+
     }
 
     public static void main(String[] args) {
         System.out.println("Day 2");
-        Solution test = new Solution("input.txt");
-        test.readFile();
+        SolutionPartB test = new SolutionPartB("input.txt");
+        test.enumTest();
     }
 }
