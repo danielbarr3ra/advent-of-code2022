@@ -51,10 +51,10 @@ enum Outcome {
     }
 }
 
-class SolutionPartB {
+class Solution {
     String path;
 
-    public SolutionPartB(String input) {
+    public Solution(String input) {
         this.path = input;
     }
 
@@ -108,7 +108,7 @@ class SolutionPartB {
 
     public static void main(String[] args) {
         System.out.println("Day 2");
-        SolutionPartB test = new SolutionPartB("input.txt");
+        Solution test = new Solution("input.txt");
         test.enumTest();
     }
 }
