@@ -5,14 +5,14 @@ enum Shape {
     SCISSOR(3),
     PAPER(2);
 
-    private int weight;
+    private int score;
 
-    private Shape(int weight) {
-        this.weight = weight;
+    private Shape(int score) {
+        this.score = score;
     }
 
     public int getScore() {
-        return weight;
+        return score;
     }
 
     public Outcome canBeat(Shape opponentShape) {
@@ -58,7 +58,7 @@ class Solution {
         this.path = input;
     }
 
-    public Shape getMove(String code) {
+    public Shape decodeMove(String code) {
         if (code.equals("X") || code.equals("A"))
             return Shape.ROCK;
         else if (code.equals("Y") || code.equals("B"))
@@ -82,7 +82,7 @@ class Solution {
             String line = br.readLine();
             while (line != null) {
                 String[] codes = line.split(" ");
-                Shape theirMove = getMove(codes[0]);
+                Shape theirMove = decodeMove(codes[0]);
                 Outcome outcome = decodeOutcome(codes[1]);
                 Shape neededMove = outcome.complement(theirMove);
                 total += neededMove.getScore() + outcome.getScore();
