@@ -1,5 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Arrays;
 
 public class Solution {
@@ -17,8 +16,8 @@ public class Solution {
 	}
 
 	public boolean dontOverlap(int[] range1, int[] range2) {
-		if ((range1[1] < range2[0] && range1[0] < range2[0]) ||
-				(range2[1] < range1[0] && range2[0] < range1[0]))
+		if (range1[1] < range2[0] ||
+				range2[1] < range1[0])
 			return true;
 		return false;
 	}
