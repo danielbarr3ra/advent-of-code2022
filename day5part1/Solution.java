@@ -37,6 +37,20 @@ public class Solution {
 		}
 	}
 
+	public void makeMultipeMovesIn9001(int fromStack, int toStack, int manyTimes) {
+		Stack<Character> holder = new Stack<>();
+		while (manyTimes > 0) {
+			char crate = elfStacks.get(fromStack).pop();
+			holder.push(crate);
+			manyTimes--;
+		}
+
+		while (!holder.isEmpty()) {
+			char crate = holder.pop();
+			elfStacks.get(toStack).push(crate);
+		}
+	}
+
 	public int[] parseInstruction(String line) {
 		int[] instructions = new int[3];
 		String[] parts = line.split(" ");
@@ -70,7 +84,7 @@ public class Solution {
 			line = br.readLine();
 			while (line != null) {
 				int[] instructions = parseInstruction(line);
-				makeMultipeMoves(instructions[1], instructions[2], instructions[0]);
+				makeMultipeMovesIn9001(instructions[1], instructions[2], instructions[0]);
 				System.out.println(line);
 				line = br.readLine();
 			}
