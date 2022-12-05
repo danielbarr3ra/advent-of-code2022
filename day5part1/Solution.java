@@ -85,7 +85,6 @@ public class Solution {
 			while (line != null) {
 				int[] instructions = parseInstruction(line);
 				makeMultipeMovesIn9001(instructions[1], instructions[2], instructions[0]);
-				System.out.println(line);
 				line = br.readLine();
 			}
 		} catch (Exception e) {
@@ -97,7 +96,6 @@ public class Solution {
 		for (int i = 1, stack = 0; i < line.length(); i += 4, stack++) {
 			if (line.charAt(i) != ' ') {
 				elfStacks.get(stack).add(0, line.charAt(i));
-				System.out.println("adding " + line.charAt(i) + " to stack" + (stack + 1));
 			}
 		}
 	}
@@ -106,7 +104,6 @@ public class Solution {
 		try (BufferedReader br = new BufferedReader(new FileReader(this.path))) {
 			String line = br.readLine();
 			while (!line.startsWith(" 1")) { // read until the end of the image
-				System.out.println(line);
 				line = br.readLine();
 			}
 		} catch (Exception e) {
@@ -118,17 +115,7 @@ public class Solution {
 		System.out.println("Day 5");
 		Solution solving = new Solution("input.txt");
 		solving.readImage();
-		System.out.println("BEFORE");
-		for (Stack<Character> elfStack : solving.elfStacks) {
-			System.out.println(Arrays.toString(elfStack.toArray()));
-		}
 		solving.readInstructions();
-		System.out.println("AFTER");
-		// checking if the elf stacks were added
-
-		for (Stack<Character> elfStack : solving.elfStacks) {
-			System.out.println(Arrays.toString(elfStack.toArray()));
-		}
 		String answer = solving.getTopStacks();
 		System.out.println(answer);
 	}
