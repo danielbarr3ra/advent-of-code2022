@@ -1,168 +1,113 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 
-class Coordinates {
-    private int x;
-    private int y;
+class Coordinate {
+    int x = 0;
+    int y = 0;
 
-    public Coordinates(int x, int y) {
+    Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
-        return x;
+    int distance(Coordinate C) {
+        int dX = Math.abs(x - C.x);
+        int dY = Math.abs(y - C.y);
+        return dX + dY;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public void update(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public boolean isDiagonal(Coordinates secondCord) {
-        if (x == secondCord.getX() || y == secondCord.getY())
+    boolean isDiagonal(Coordinate C) {
+        if (C.x == x || C.y == y)
             return false;
         return true;
     }
 
-    public boolean isTouching(Coordinates secondCord) {
-        int diffX = Math.abs(x - secondCord.getX());
-        int diffY = Math.abs(y - secondCord.getY());
-        if (isDiagonal(secondCord)) {
-            return (diffX + diffY <= 2);
+    boolean touching(Coordinate C) {
+        if (isDiagonal(C)) {
+            return (distance(C) == 2);
         }
-        return (diffX + diffY <= 1);
+        return (distance(C) <= 1);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Coordinates other = (Coordinates) obj;
-        return this.getX() == other.getX() && this.getY() == other.getY();
+    void chase(Coordinate C) {
+        int diffX = C.x - x;
+        int diffY = C.y - y;
+
+        x = x + Integer.signum(diffX);
+        y = y + Integer.signum(diffY);
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + x;
-        result = prime * result + y;
-
-        return result;
+    void move(int x, int y) {
+        this.x = this.x + x;
+        this.y = this.y + y;
     }
 
     @Override
     public String toString() {
-        return "Coordinates X: " + this.x + "  Y: " + this.y;
+        return new String("X: " + x + " Y: " + y);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 589 * result + y;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (x == ((Coordinate) obj).x && y == ((Coordinate) obj).y)
+            return true;
+        return false;
     }
 }
 
 public class Solution {
     String path;
-    Coordinates head = new Coordinates(0, 0);
-    Coordinates tail = new Coordinates(0, 0);
+    int sizeOfRope = 10;
+    ArrayList<Coordinate> rope = new ArrayList<>();
+    HashSet<Coordinate> visited = new HashSet<>();
+    Coordinate head = new Coordinate(0, 0);
+    Coordinate tail = new Coordinate(0, 0);
 
-    HashSet<Coordinates> traversed = new HashSet<>();
+    Solution(String p) {
+        this.path = p;
+    }
 
-    public Solution(String path) {
-        this.path = path;
-    };
-
-    public void moveDirection(String dir) {
-        switch (dir) {
-            case "U":
-                System.out.println("GOING UP");
-                head.update(head.getX(), head.getY() + 1);
-                if (!head.isTouching(tail)) {
-                    if (head.isDiagonal(tail)) {
-                        if (head.getX() > tail.getX()) {
-                            tail.update(tail.getX() + 1, tail.getY() + 1);
-                        } else {
-                            tail.update(tail.getX() - 1, tail.getY() + 1);
-                        }
-                    } else {
-                        tail.update(tail.getX(), tail.getY() + 1);
-                    }
-                    // add the tail to coordinates if not in it.
-                }
-                break;
-            case "D":
-                System.out.println("GOIGN DOWN");
-                head.update(head.getX(), head.getY() - 1);
-                if (!head.isTouching(tail)) {
-                    if (head.isDiagonal(tail)) {
-                        if (head.getX() > tail.getX()) {
-                            tail.update(tail.getX() + 1, tail.getY() - 1);
-                        } else {
-                            tail.update(tail.getX() - 1, tail.getY() - 1);
-                        }
-                    } else {
-                        tail.update(tail.getX(), tail.getY() - 1);
-                    }
-                    // add the tail to coordinates if not in it.
-                }
-                break;
-
-            case "R":
-                System.out.println("GOIGN RIGHT");
-                head.update(head.getX() + 1, head.getY());
-                if (!head.isTouching(tail)) {
-                    if (head.isDiagonal(tail)) {
-                        if (head.getY() > tail.getY()) {
-                            tail.update(tail.getX() + 1, tail.getY() + 1);
-                        } else {
-                            tail.update(tail.getX() + 1, tail.getY() - 1);
-                        }
-                    } else {
-                        tail.update(tail.getX() + 1, tail.getY());
-                    }
-                    // add the tail to coordinates if not in it.
-                }
-                break;
-            case "L":
-                System.out.println("GOING LEFT");
-                head.update(head.getX() - 1, head.getY());
-                if (!head.isTouching(tail)) {
-                    if (head.isDiagonal(tail)) {
-                        if (head.getY() > tail.getY()) {
-                            tail.update(tail.getX() - 1, tail.getY() + 1);
-                        } else {
-                            tail.update(tail.getX() - 1, tail.getY() - 1);
-                        }
-                    } else {
-                        tail.update(tail.getX() - 1, tail.getY());
-                    }
-                    // add the tail to coordinates if not in it.
-                }
-                break;
+    void moveDirection(String command) {
+        if (command.equals("U")) {
+            head.move(0, 1);
+        } else if (command.equals("D")) {
+            head.move(0, -1);
+        } else if (command.equals("L")) {
+            head.move(-1, 0);
+        } else if (command.equals("R")) {
+            head.move(1, 0);
+        } else {
+            head.move(0, 0);
+        }
+        if (!tail.touching(head)) {
+            tail.chase(head);
+            visited.add(tail);
         }
     }
 
-    public void readFile() {
+    void moveMultiple(String command, int times) {
+        for (int i = 0; i < times; i++) {
+            moveDirection(command);
+        }
+    }
+
+    void readFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            traversed.add(tail);
             String line = br.readLine();
             while (line != null) {
-                String[] command = line.split(" ");
-                int amount = Integer.parseInt(command[1]);
-                String direction = command[0];
                 System.out.println(line);
-                for (int i = 0; i < amount; i++) {
-                    moveDirection(direction);
-
-                    traversed.add(tail);
-
-                }
+                String[] opps = line.split(" ");
+                System.out.println(opps[0] == "U");
+                moveMultiple(opps[0], Integer.parseInt(opps[1]));
                 line = br.readLine();
             }
         } catch (Exception e) {
@@ -170,16 +115,21 @@ public class Solution {
         }
     }
 
-    void testDirections() {
-        System.out.println("Is it diagonal? " + head.isDiagonal(tail));
-        System.out.println("Are they touching: " + head.isTouching(tail));
+    void testing() {
+        System.out.println(tail.distance(head));
+        System.out.println("Are they equal " + head.equals(tail));
+        System.out.println(tail.touching(head));
+        tail.chase(head);
+        System.out.println(tail);
+        System.out.println(tail.touching(head));
+        visited.add(head);
+        visited.add(tail);
+        System.out.println(visited.size());
     }
 
     public static void main(String[] args) {
-        System.out.println("hey");
         Solution day9 = new Solution("input.txt");
-        day9.testDirections();
         day9.readFile();
-        System.out.println("TRAVERSED FOR TAIL " + day9.traversed.size());
+        System.out.println(day9.visited.size());
     }
 }
