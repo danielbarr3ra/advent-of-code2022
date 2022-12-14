@@ -72,8 +72,11 @@ public class Solution {
     Coordinate head = new Coordinate(0, 0);
     Coordinate tail = new Coordinate(0, 0);
 
-    Solution(String p) {
+    Solution(String p, int chainSize) {
         this.path = p;
+        for (int i = 0; i < chainSize; i++) {
+            rope.add(new Coordinate(0, 0));
+        }
     }
 
     void moveDirection(String command) {
@@ -94,9 +97,39 @@ public class Solution {
         }
     }
 
+    void chaseKnots() {
+        System.out.println("CURRENT ROPE");
+        for (int i = 1; i < rope.size(); i++) {
+            Coordinate leading = rope.get(i - 1);
+            Coordinate current = rope.get(i);
+            System.out.println("LEADING: " + leading + " CURRENT " + current);
+            if (!current.touching(leading)) {
+                current.chase(leading);
+                visited.add(rope.get(rope.size() - 1));
+            }
+
+        }
+    }
+
+    void moveRope(String command) {
+        if (command.equals("U")) {
+            rope.get(0).move(0, 1);
+        } else if (command.equals("D")) {
+            rope.get(0).move(0, -1);
+        } else if (command.equals("L")) {
+            rope.get(0).move(-1, 0);
+        } else if (command.equals("R")) {
+            rope.get(0).move(1, 0);
+        } else {
+            rope.get(0).move(0, 0);
+        }
+        chaseKnots();
+    }
+
     void moveMultiple(String command, int times) {
         for (int i = 0; i < times; i++) {
-            moveDirection(command);
+            // moveDirection(command);
+            moveRope(command);
         }
     }
 
@@ -106,7 +139,6 @@ public class Solution {
             while (line != null) {
                 System.out.println(line);
                 String[] opps = line.split(" ");
-                System.out.println(opps[0] == "U");
                 moveMultiple(opps[0], Integer.parseInt(opps[1]));
                 line = br.readLine();
             }
@@ -128,7 +160,7 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-        Solution day9 = new Solution("input.txt");
+        Solution day9 = new Solution("input.txt", 10);
         day9.readFile();
         System.out.println(day9.visited.size());
     }
